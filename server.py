@@ -25,7 +25,6 @@ def process_client_message(message):
             ACTION in message and
             message[ACTION] == MSG and
             TIME in message and
-            # USER in message and
             MESSAGE in message and
             TO in message and
             FROM in message and
@@ -36,7 +35,7 @@ def process_client_message(message):
         }
 
     return {
-        RESPONSE_DEFAULT_IP_ADDRESS: 400,
+        RESPONSE: 400,
         ERROR: SERVER_ANSWERS[400]
     }
 
@@ -60,10 +59,10 @@ def main():
             print(message_from_client)
             response = process_client_message(message_from_client)
             send_message(client, response)
-            # client.close()
+            client.close()
         except (ValueError, json.JSONDecodeError):
             print('Принято некорретное сообщение от клиента.')
-            # client.close()
+            client.close()
 
 
 if __name__ == '__main__':
