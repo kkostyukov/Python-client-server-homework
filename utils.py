@@ -2,8 +2,10 @@ import json
 import argparse
 import sys
 from project_settings import DEFAULT_IP_ADDRESS, ENCODING, MAX_PACKAGE_LENGTH, DEFAULT_PORT
+from decorators import log
 
 
+@log
 def get_pars():
     """
     Утилита приема и возврата параметров из командной строки
@@ -12,10 +14,13 @@ def get_pars():
     parser.add_argument('-a', '--adr', default=DEFAULT_IP_ADDRESS, help='Адрес сервера')
     parser.add_argument('-p', '--port', default=DEFAULT_PORT, help='Порт сервера', type=int)
     if parser.parse_args().port < 1024 or parser.parse_args().port > 65535:
-        print('В качастве порта может быть указано только число в диапазоне от 1024 до 65535.')
+        # SERVER_LOGGER.critical(f'Попытка запуска сервера с указанием неподходящего порта '
+        #                        f'{parser.parse_args().port}. Допустимы адреса с 1024 до 65535.')
         sys.exit(1)
     return parser.parse_args().adr, parser.parse_args().port
 
+
+@log
 def get_message(client):
     """
     Утилита приёма и декодирования сообщения.
@@ -32,6 +37,7 @@ def get_message(client):
     raise ValueError
 
 
+@log
 def send_message(sock, message):
     """
     Утилита кодирования и отправки сообщения.

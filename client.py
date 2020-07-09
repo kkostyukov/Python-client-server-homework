@@ -1,12 +1,18 @@
 import json
 import socket
 import time
+import logging
+import log.client_log_config
+from decorators import log
 
 from utils import get_message, send_message, get_pars
 from project_settings import ACTION, PRESENCE, USER, TIME, ACCOUNT_NAME, RESPONSE, ERROR, SERVER_ANSWERS, FROM,\
     ENCODING, MESSAGE, TO, MSG
 
+LOGGER = logging.getLogger('client')
 
+
+@log
 def create_presence(account_name='Guest'):
     """Функция генерирует запрос о присутствии клиента."""
     out = {
@@ -16,6 +22,7 @@ def create_presence(account_name='Guest'):
             ACCOUNT_NAME: account_name
         }
     }
+    LOGGER.debug(f'Сформировано {PRESENCE} сообщение для пользователя {account_name}')
     return out
 
 
@@ -40,7 +47,6 @@ def process_ans(message):
             return message[RESPONSE]
     else:
         return f'400 : {message[ERROR]}'
-    # raise ValueError
 
 
 def main():
@@ -51,6 +57,7 @@ def main():
     send_message(transport, message_to_server)
     try:
         answer = process_ans(get_message(transport))
+        LOGGER.info(f'Принят ответ от сервера {answer}')
         print(answer)
     except (ValueError, json.JSONDecodeError):
         print('Не удалось декодировать сообщение сервера.')
@@ -60,8 +67,10 @@ def main():
     send_message(transport, message_to_server)
     try:
         answer = process_ans(get_message(transport))
+        LOGGER.info(f'Принят ответ от сервера {answer}')
         print(answer)
     except (ValueError, json.JSONDecodeError):
+        LOGGER.error('Не удалось декодировать полученную Json строку.')
         print('Не удалось декодировать сообщение сервера.')
 
 

@@ -27,6 +27,7 @@ class TestServer(unittest.TestCase):
                                                  MESSAGE: 'Привет'}
                                                 ), self.msg_ok
                          )
+
     def test_bad_request(self):
         self.assertEqual(process_client_message({ACTION: 'bad', TIME: time.time, USER: {ACCOUNT_NAME: 'Guest'}}
                                                 ), self.resp_err
